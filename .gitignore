@@ -1,0 +1,5 @@
+__pycache__
+.vscode/*
+venv/*
+my-macro.sqlite3
+.DS_Store
