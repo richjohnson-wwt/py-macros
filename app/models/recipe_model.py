@@ -23,21 +23,23 @@ class Ingredient:
         self.unit = unit
 
 class RecipeModel:
-    def __init__(self):
+    def __init__(self, events):
         self.conn = sqlite3.connect('my-macro.sqlite3')
         self.cursor = self.conn.cursor()
         self.selected_recipe = None
-        self.subscribers = []
+        self.events = {event : dict() for event in events}
 
-    def register(self, subscriber):
-        logger.debug("Registering subscriber: " + str(subscriber))
-        self.subscribers.append(subscriber)
+    def get_subscribers(self, event):
+        return self.events[event]
 
-    def notify(self):
-        logger.debug("Subscriber size: " + str(len(self.subscribers)))
-        for subscriber in self.subscribers:
-            logger.debug("Notifying subscriber: " + str(subscriber))
-            subscriber.on_recipe_change(self.selected_recipe)
+    def register(self, event, who, callback=None):
+        if callback is None:
+            callback = getattr(who, 'update')
+        self.get_subscribers(event)[who] = callback
+
+    def notify(self, event, message=None):
+        for subscriber, callback in self.get_subscribers(event).items():
+            callback(message)
 
     def get_recipes(self):
         recipes = []
@@ -48,7 +50,7 @@ class RecipeModel:
     def set_selected_recipe(self, recipe_id):
         logger.debug("Setting selected recipe: " + str(recipe_id))
         self.selected_recipe = recipe_id
-        self.notify()
+        self.notify('item_selected', recipe_id)
 
     def get_recipe(self, recipe_id):
         logger.debug("Getting recipe: " + str(recipe_id))

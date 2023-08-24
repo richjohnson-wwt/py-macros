@@ -11,7 +11,7 @@ class MainWindow(wx.Panel):
         self.main_panel = wx.Panel(self)
         self.mainsizer = wx.BoxSizer(wx.HORIZONTAL)
         self.notebook = wx.Notebook(self.main_panel, style=wx.BK_DEFAULT, size=(800, 600))
-        parent.InstallCenter(self, "Main")
+        parent.install_center(self, "Main")
 
     def notebook_ctrl(self):
         return self.notebook

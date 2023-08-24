@@ -6,7 +6,7 @@ class ExplorerWindow(wx.Panel):
         wx.Panel.__init__(self, parent)
         self.main_panel = wx.Panel(self)
         self.notebook = wx.Notebook(self.main_panel, -1, style=wx.NB_TOP, size=(400, 800))
-        parent.InstallLeft(self)
+        parent.install_left(self)
 
     def notebook_ctrl(self):
         return self.notebook

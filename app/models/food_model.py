@@ -20,21 +20,23 @@ class Food(object):
         self.popularity = popularity
 
 class FoodModel:
-    def __init__(self):
+    def __init__(self, events):
         self.conn = sqlite3.connect('my-macro.sqlite3')
         self.cursor = self.conn.cursor()
         self.selected_food = None
-        self.subscribers = []
+        self.events = {event : dict() for event in events}
 
-    def register(self, subscriber):
-        logger.debug("Registering subscriber: " + str(subscriber))
-        self.subscribers.append(subscriber)
+    def get_subscribers(self, event):
+        return self.events[event]
 
-    def notify(self):
-        logger.debug("Subscriber size: " + str(len(self.subscribers)))
-        for subscriber in self.subscribers:
-            logger.debug("Notifying subscriber: " + str(subscriber))
-            subscriber.on_food_change(self.selected_food)
+    def register(self, event, who, callback=None):
+        if callback is None:
+            callback = getattr(who, 'update')
+        self.get_subscribers(event)[who] = callback
+
+    def notify(self, event, message=None):
+        for subscriber, callback in self.get_subscribers(event).items():
+            callback(message)
 
     def get_foods(self):
         logger.info("Getting foods")
@@ -46,7 +48,7 @@ class FoodModel:
     def set_selected_food(self, food_id):
         logger.debug("Setting selected food: " + str(food_id))
         self.selected_food = food_id
-        self.notify()
+        self.notify('item_selected', food_id)
 
     def get_food(self, food_id):
         logger.debug("Getting food: " + str(food_id))
