@@ -39,6 +39,17 @@ class FoodWindow(wx.Notebook):
         self.food_popularity_text_ctrl = wx.TextCtrl(top_panel, -1, "", wx.DefaultPosition, wx.Size(200, 20))
         top_sizer.Add(create_label_with_text_sizer(top_panel, "Popularity", self.food_popularity_text_ctrl), 0, wx.ALL, 10)
 
+        button_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        self.apply_button = wx.Button(top_panel, -1, "Apply")
+        self.cancel_button = wx.Button(top_panel, -1, "Cancel")
+        self.new_button = wx.Button(top_panel, -1, "New Food")
+
+        button_sizer.Add(self.apply_button, 0, wx.ALL, 10)
+        button_sizer.Add(self.cancel_button, 0, wx.ALL, 10)
+        button_sizer.Add(self.new_button, 0, wx.ALL, 10)
+
+        top_sizer.Add(button_sizer, 0, wx.ALL, 10)
+
         top_panel.SetSizer(top_sizer)
         parent.AddPage(top_panel, "Food")
     
@@ -50,7 +61,6 @@ class FoodWindow(wx.Notebook):
         self.food_carbs_text_ctrl.SetValue(str(food.carbs))
         self.food_calories_text_ctrl.SetValue(str(food.calories))
         self.food_quantity_text_ctrl.SetValue(str(food.quantity))
-        # self.food_unit_id_text_ctrl.SetValue(str(food.unit_id))
         self.food_unit_combo_box.Clear()
         for unit in units:
             self.food_unit_combo_box.Append(unit.name)

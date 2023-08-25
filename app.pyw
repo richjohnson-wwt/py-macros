@@ -14,11 +14,12 @@ import explorer_interactor
 import main_interactor
 import main_view
 import main_presenter
+import main_model
 
-import progress_presenter
+import _progress_presenter
 import progress_view
 
-import daily_model
+import _daily_model
 import daily_view
 
 import food_model
@@ -27,7 +28,7 @@ import food_view
 import recipe_model
 import recipe_view
 
-import goal_model
+import _goal_model
 import goal_view
 
 import unit_model
@@ -35,65 +36,84 @@ import unit_model
 import wx
 import wx.lib.agw.aui as aui
 
-aui_mgr = MyAuiManager()
+_aui_mgr = MyAuiManager()
 
 # create all of the MVPs
-single_unit_model = unit_model.UnitModel()
-single_food_model = food_model.FoodModel(['list_changed', 'item_selected'])
-single_recipe_model = recipe_model.RecipeModel(['list_changed', 'item_selected'])
-explorer_window = explorer_view.ExplorerWindow(aui_mgr)
-food_list_presenter = explorer_presenter.FoodListPresenter(
-    single_food_model,
-    explorer_view.FoodListView(explorer_window.notebook_ctrl()),
-    explorer_interactor.FoodListInteractor()
+_single_main_model = main_model.MainModel()
+_single_unit_model = unit_model.UnitModel()
+
+_single_food_model = food_model.FoodModel(['list_changed', 'item_selected'])
+_single_recipe_model = recipe_model.RecipeModel(['list_changed', 'item_selected'])
+_single_explorer_model = explorer_model.ExplorerModel(_single_food_model, _single_recipe_model)
+_explorer_window = explorer_view.ExplorerWindow(_aui_mgr)
+_food_list_presenter = explorer_presenter.FoodListPresenter(
+    _single_food_model,
+    explorer_view.FoodListView(_explorer_window.notebook_ctrl()),
+    explorer_interactor.FoodListInteractor(),
+    _single_explorer_model
 )
 
-recipe_list_presenter = explorer_presenter.RecipeListPresenter(
-    single_recipe_model,
-    explorer_view.RecipeListView(explorer_window.notebook_ctrl()),
-    explorer_interactor.RecipeListInteractor())
+_recipe_list_presenter = explorer_presenter.RecipeListPresenter(
+    _single_recipe_model,
+    explorer_view.RecipeListView(_explorer_window.notebook_ctrl()),
+    explorer_interactor.RecipeListInteractor(),
+    _single_explorer_model
+)
 
-explorer_window.post_init()
-food_list_presenter.post_init()
-recipe_list_presenter.post_init()
+_explorer_window.post_init()
+_food_list_presenter.post_init()
+_recipe_list_presenter.post_init()
 
-main_window = main_view.MainWindow(aui_mgr)
-daily_model = daily_model.DailyModel()
-goal_model = goal_model.GoalModel()
-daily = main_presenter.DailyPresenter(
-    daily_model,
-    daily_view.DailyWindow(main_window.notebook_ctrl()),
-    main_interactor.DailyInteractor())
+_main_window = main_view.MainWindow(_aui_mgr)
+_daily_model = _daily_model.DailyModel()
+_goal_model = _goal_model.GoalModel()
+_main_presenter = main_presenter.MainPresenter(
+    _single_main_model,
+    _main_window,
+    main_interactor.MainInteractor()
+)
 
-food = main_presenter.FoodPresenter(
-    single_food_model,
-    food_view.FoodWindow(main_window.notebook_ctrl()),
+_daily_presenter = main_presenter.DailyPresenter(
+    _daily_model,
+    daily_view.DailyWindow(_main_window.notebook_ctrl()),
+    main_interactor.DailyInteractor()
+)
+
+_food_presenter = main_presenter.FoodPresenter(
+    _single_food_model,
+    food_view.FoodWindow(_main_window.notebook_ctrl()),
     main_interactor.FoodInteractor(),
-    single_unit_model
+    _single_unit_model,
+    _single_main_model
 )
 
-recipe = main_presenter.RecipePresenter(
-    single_recipe_model,
-    recipe_view.RecipeWindow(main_window.notebook_ctrl()),
-    main_interactor.RecipeInteractor())
-
-goal = main_presenter.GoalPresenter(
-    goal_model,
-    goal_view.GoalWindow(main_window.notebook_ctrl()),
-    main_interactor.GoalInteractor())
-
-
-main_window.post_init()
-daily.post_init()
-food.post_init()
-recipe.post_init()
-goal.post_init()
-
-progress_presenter = progress_presenter.ProgressPresenter(
-    daily_model, goal_model, progress_view.ProgressWindow(aui_mgr)
+_recipe_presenter = main_presenter.RecipePresenter(
+    _single_recipe_model,
+    recipe_view.RecipeWindow(_main_window.notebook_ctrl()),
+    main_interactor.RecipeInteractor(),
+    _single_unit_model,
+    _single_main_model,
+    _single_food_model
 )
 
-progress_presenter.post_init()
+_goal_presenter = main_presenter.GoalPresenter(
+    _goal_model,
+    goal_view.GoalWindow(_main_window.notebook_ctrl()),
+    main_interactor.GoalInteractor()
+)
 
-aui_mgr.start()
+
+_main_window.post_init()
+_daily_presenter.post_init()
+_food_presenter.post_init()
+_recipe_presenter.post_init()
+_goal_presenter.post_init()
+
+_progress_presenter = _progress_presenter.ProgressPresenter(
+    _daily_model, _goal_model, progress_view.ProgressWindow(_aui_mgr)
+)
+
+_progress_presenter.post_init()
+
+_aui_mgr.start()
 
