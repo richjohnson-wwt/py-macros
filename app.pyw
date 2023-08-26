@@ -16,10 +16,10 @@ import main_view
 import main_presenter
 import main_model
 
-import _progress_presenter
+import progress_presenter
 import progress_view
 
-import _daily_model
+import daily_model
 import daily_view
 import macro_calculator
 
@@ -29,7 +29,7 @@ import food_view
 import recipe_model
 import recipe_view
 
-import _goal_model
+import goal_model
 import goal_view
 
 import unit_model
@@ -66,8 +66,8 @@ _food_list_presenter.post_init()
 _recipe_list_presenter.post_init()
 
 _main_window = main_view.MainWindow(_aui_mgr)
-_daily_model = _daily_model.DailyModel()
-_goal_model = _goal_model.GoalModel()
+_daily_model = daily_model.DailyModel()
+_goal_model = goal_model.GoalModel()
 _main_presenter = main_presenter.MainPresenter(
     _single_main_model,
     _main_window,
@@ -112,7 +112,7 @@ _food_presenter.post_init()
 _recipe_presenter.post_init()
 _goal_presenter.post_init()
 
-_progress_presenter = _progress_presenter.ProgressPresenter(
+_progress_presenter = progress_presenter.ProgressPresenter(
     _daily_model, _goal_model, progress_view.ProgressWindow(_aui_mgr)
 )
 
