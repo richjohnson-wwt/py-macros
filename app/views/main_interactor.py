@@ -27,10 +27,14 @@ class DailyInteractor:
         self.view.add_food_button.Bind(wx.EVT_BUTTON, self.on_add_food)
         self.view.add_recipe_button.Bind(wx.EVT_BUTTON, self.on_add_recipe)
         self.view.add_one_off_button.Bind(wx.EVT_BUTTON, self.on_add_one_off)
+        self.view.food_list_view.Bind(wx.EVT_KEY_DOWN, self.on_key_down)
+        self.view.food_list_view.Bind(wx.EVT_LIST_ITEM_SELECTED, self.on_food_item_selected)
 
     def on_date_changed(self, event):
-        logger.info("Date changed: %s", event.GetDate())
-        self.presenter.on_date_changed(event.GetDate())
+        date = event.GetDate()
+        date_str = date.Format("%Y-%m-%d")
+        logger.info("Date changed: %s", date_str)
+        self.presenter.on_date_changed(date_str)
 
     def on_add_activity(self, event):
         self.presenter.on_add_activity()
@@ -46,6 +50,12 @@ class DailyInteractor:
 
     def on_add_one_off(self, event):
         self.presenter.on_add_one_off()
+
+    def on_key_down(self, event):
+        self.presenter.delete_food()
+
+    def on_food_item_selected(self, event):
+        self.presenter.on_food_item_selected(event.GetText())
 
 class FoodInteractor:
     def install(self, presenter, view):

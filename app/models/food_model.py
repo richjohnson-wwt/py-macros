@@ -7,7 +7,7 @@ logger = app_logging.get_app_logger(__name__)
 
 # https://docs.python.org/3/library/sqlite3.html
 
-class Food(object):
+class Food:
     def __init__(self, food_id, name, fat, protein, carbs, calories, quantity, unit_id, popularity):
         self.id = food_id
         self.name = name

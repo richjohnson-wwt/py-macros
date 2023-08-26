@@ -21,6 +21,7 @@ import progress_view
 
 import _daily_model
 import daily_view
+import macro_calculator
 
 import food_model
 import food_view
@@ -76,7 +77,9 @@ _main_presenter = main_presenter.MainPresenter(
 _daily_presenter = main_presenter.DailyPresenter(
     _daily_model,
     daily_view.DailyWindow(_main_window.notebook_ctrl()),
-    main_interactor.DailyInteractor()
+    main_interactor.DailyInteractor(),
+    _single_food_model,
+    macro_calculator.MacroCalculator()
 )
 
 _food_presenter = main_presenter.FoodPresenter(

@@ -14,29 +14,65 @@ class MainPresenter:
         self.model.notify(page)
 
 class DailyPresenter:
-    def __init__(self, model, view, interactor):
+    def __init__(self, model, view, interactor, food_model, macro_calculator):
         self.model = model
         self.view = view
+        self.food_model = food_model
+        self.macro_calculator = macro_calculator
         interactor.install(self, view)
 
     def post_init(self):
-        pass
+        todays_date = self.model.get_today_date()
+        logger.info("Today's date: " + str(todays_date))
+        # self.create_daily_food_if_not_exists(todays_date)
+        self.on_date_changed(todays_date)
+
+    def create_daily_food_if_not_exists(self, the_date):
+        if self.model.does_date_exist(the_date):
+            logger.info("Date already exists")
+        else:
+            logger.info("Creating new date: " + str(the_date))
+            self.model.create_daily_food(the_date)
 
     def on_date_changed(self, new_date):
         logger.info("Date changed: %s", new_date)
-        # self.view.set_date(event.GetDate())
+        self.create_daily_food_if_not_exists(new_date)
+        self.model.set_selected_date(new_date)
+        self.load_view_from_model()
+
+    def load_view_from_model(self):
+        daily_food = self.model.get_daily_food()
+        self.view.add_activity_text_ctrl.SetValue(str(daily_food.exercise))
+        self.view.add_weight_text_ctrl.SetValue(str(daily_food.weight))
+        self.view.reset_daily_multiplier(self.model.serving_increments, 5)
+        food_list = self.model.get_xref_daily_foods(daily_food.daily_food_id)
+        for f in food_list:
+            logger.info("Food xref id: " + str(f.xref_id))
+        self.view.set_daily_foods(food_list)
 
     def on_add_activity(self):
         logger.info("Adding activity")
-        pass
+        self.model.update_exercise_calorie_bonus(self.view.add_activity_text_ctrl.GetValue())
 
     def on_add_weight(self):
         logger.info("Adding weight")
-        pass
+        self.model.update_weight(self.view.add_weight_text_ctrl.GetValue())
 
     def on_add_food(self):
         logger.info("Adding food")
-        pass
+        daily_food = self.model.get_daily_food()
+        food_item_to_add = self.food_model.get_food()
+        multiplier = self.view.unit_combo_box.GetValue()
+        calculated_macros = self.macro_calculator.calculate_food_macros(food_item_to_add, multiplier)
+        self.model.add_xref_daily_food(
+            daily_food.daily_food_id,
+            food_item_to_add.name + " x " + str(multiplier),
+            calculated_macros.fat_grams,
+            calculated_macros.protein_grams,
+            calculated_macros.carb_grams,
+            calculated_macros.calories
+        )
+        self.load_view_from_model()
 
     def on_add_recipe(self):
         logger.info("Adding recipe")
@@ -45,6 +81,14 @@ class DailyPresenter:
     def on_add_one_off(self):
         logger.info("Adding one-off")
         pass
+
+    def delete_food(self):
+        logger.info("Deleting food")
+        self.model.delete_xref_daily_food()
+
+    def on_food_item_selected(self, xref_id):
+        logger.debug("Food selected: " + xref_id)
+        self.model.selected_xref_id = xref_id
 
 
 class FoodPresenter:

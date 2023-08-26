@@ -61,9 +61,13 @@ class DailyWindow(wx.Notebook):
         top_section.Add(activity_weight_box_sizer, 0, wx.ALL, 10)
         top_section.Add(calendar_box_sizer, 0, wx.ALL, 10)
 
-        food_list_view = wx.ListView(top_panel, -1, style=wx.LC_REPORT)
-        food_list_view.InsertColumn(0, 'ID', width=140)
-        food_list_view.InsertColumn(1, 'Name', width=60)
+        self.food_list_view = wx.ListView(top_panel, -1, style=wx.LC_REPORT)
+        self.food_list_view.InsertColumn(0, 'ID', width=100)
+        self.food_list_view.InsertColumn(1, 'Food/Recipe Name', width=320)
+        self.food_list_view.InsertColumn(2, 'Calories', width=100)
+        self.food_list_view.InsertColumn(3, 'Fat g', width=100)
+        self.food_list_view.InsertColumn(4, 'Protein g', width=100)
+        self.food_list_view.InsertColumn(5, 'Carbs g', width=100)
 
         macro_sizer = wx.BoxSizer(wx.HORIZONTAL)
         macro_sizer.Add(wx.StaticText(top_panel, -1, "Fat Percent: ", wx.DefaultPosition, wx.Size(100, 20), wx.ALIGN_LEFT), 0, wx.ALL, 10)
@@ -78,12 +82,24 @@ class DailyWindow(wx.Notebook):
 
         top_sizer.Add(top_section, 0, wx.EXPAND)
         top_sizer.Add(add_food_sizer, 0, wx.ALL, 5)
-        top_sizer.Add(food_list_view, 2, wx.EXPAND)
+        top_sizer.Add(self.food_list_view, 2, wx.EXPAND)
         top_sizer.Add(macro_sizer, 0, wx.ALL, 10)
 
         top_panel.SetSizer(top_sizer)
         parent.AddPage(top_panel, "Daily")
 
-    
+    def reset_daily_multiplier(self, increments, default_index):
+        self.unit_combo_box.Clear()
+        for i in increments:
+            self.unit_combo_box.Append(i)
+        self.unit_combo_box.SetSelection(default_index)
 
-        
+    def set_daily_foods(self, food_list):
+        self.food_list_view.DeleteAllItems()
+        for food in food_list:
+            self.food_list_view.InsertItem(0, str(food.xref_id))
+            self.food_list_view.SetItem(0, 1, food.name)
+            self.food_list_view.SetItem(0, 2, str(food.calories))
+            self.food_list_view.SetItem(0, 3, str(food.fat))
+            self.food_list_view.SetItem(0, 4, str(food.protein))
+            self.food_list_view.SetItem(0, 5, str(food.carbs))
