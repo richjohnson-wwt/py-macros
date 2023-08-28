@@ -5,42 +5,45 @@ sys.path.append('app/views')
 sys.path.append('app/presenters')
 sys.path.append('app/models')
 
-from aui_manager import MyAuiManager
-import explorer_presenter
-import explorer_model
-import explorer_view
-import explorer_interactor
+# from aui_manager import MyAuiManager
+# import explorer_presenter
+# import explorer_model
+# import explorer_view
+# import explorer_interactor
 
-import main_interactor
-import main_view
-import main_presenter
-import main_model
+# import main_interactor
+# import main_view
+# import main_presenter
+# import main_model
 
-import progress_presenter
-import progress_view
+# import progress_presenter
+# import progress_view
 
-import daily_model
-import daily_view
-import macro_calculator
+# import daily_model
+# import daily_view
+# import macro_calculator
 
 
-import food_model
-import food_view
+# import food_model
+# import food_view
 
-import recipe_model
-import recipe_view
+# import recipe_model
+# import recipe_view
 
-import goal_model
-import goal_view
+# import goal_model
+# import goal_view
 
-import unit_model
+# import unit_model
 
+import app_frame
 import wx
-import wx.lib.agw.aui as aui
 
-_aui_mgr = MyAuiManager()
+
+_app_frame = app_frame.AppFrame()
+_app_frame.post_init()
 
 # create all of the MVPs
+"""
 _single_main_model = main_model.MainModel()
 _single_unit_model = unit_model.UnitModel()
 
@@ -119,7 +122,10 @@ _progress_presenter = progress_presenter.ProgressPresenter(
     _daily_model, _goal_model, progress_view.ProgressWindow(_aui_mgr)
 )
 
+_aui_mgr = MyAuiManager()
+
 _progress_presenter.post_init()
 
 _aui_mgr.start()
+"""
 

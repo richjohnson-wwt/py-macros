@@ -9,8 +9,9 @@ class FoodListPresenter:
     def __init__(self, model, view, interactor, explorer_model):
         self.view = view
         self.model = model
+        self.interactor = interactor
         self.explorer_model = explorer_model
-        interactor.install(self, view)
+        
         self.model.register('list_changed', self, self.food_list_changed)
 
     def on_food_item_selected(self, food_id):
@@ -20,6 +21,7 @@ class FoodListPresenter:
 
     def post_init(self):
         self.view.set_foods(self.model.get_foods())
+        self.interactor.install(self, self.view)
 
     def food_list_changed(self):
         logger.info("Notified about Food list changed")
@@ -34,7 +36,8 @@ class RecipeListPresenter:
         self.view = view
         self.model = model
         self.explorer_model = explorer_model
-        interactor.install(self, view)
+        self.interactor = interactor
+        
         self.model.register('list_changed', self, self.recipe_list_changed)
 
     def on_recipe_item_selected(self, recipe_id):
@@ -44,6 +47,7 @@ class RecipeListPresenter:
 
     def post_init(self):
         self.view.set_recipes(self.model.get_recipes())
+        self.interactor.install(self, self.view)
 
     def recipe_list_changed(self):
         logger.info("Notified about Recipe list changed")
