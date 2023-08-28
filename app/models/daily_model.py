@@ -61,6 +61,14 @@ class DailyModel:
         logger.info("Getting daily food")
         for row in self.cursor.execute('SELECT * FROM daily_food where date = ?', (str(self.selected_date),)):
             return DailyFood(row[0], row[1], row[2], row[3])
+
+    def get_daily_food_by_date_range(self, start_date, end_date):
+        logger.info("Getting daily food by date range")
+        daily_foods_by_date_range = []
+        for row in self.cursor.execute('SELECT * FROM daily_food WHERE date BETWEEN ? AND ?', (str(start_date), str(end_date))):
+            daily_foods_by_date_range.append(DailyFood(row[0], row[1], row[2], row[3]))
+        return daily_foods_by_date_range
+        
     
     def update_weight(self, weight):
         logger.info("Updating weight: " + str(weight))
@@ -82,4 +90,46 @@ class DailyModel:
         xref_daily_foods = []
         for row in self.cursor.execute('SELECT * FROM xref_daily_foods WHERE daily_food_id = ?', (str(daily_food_id),)):
             xref_daily_foods.append(XrefDailyFood(row[0], row[1], row[2], row[3], row[4], row[5], row[6]))
+
+        for x in xref_daily_foods:
+            logger.info("XCarbs: " + str(x.carbs))
         return xref_daily_foods
+
+    def get_totals(self, bonus_calories, goal, goal_fat_g, goal_protein_g, goal_carb_g, goal_calories):
+        logger.info("Getting totals")
+        daily_food = self.get_daily_food()
+        xref_daily_foods = self.get_xref_daily_foods(daily_food.daily_food_id)
+        total_calories = 0
+        total_fat_grams = 0
+        total_protein_grams = 0
+        total_carb_grams = 0
+
+        for xdf in xref_daily_foods:
+            total_calories += xdf.calories
+            total_fat_grams += xdf.fat
+            total_protein_grams += xdf.protein
+            total_carb_grams += xdf.carbs
+
+        xref_remaining = XrefDailyFood(-1, -1,
+            "Remaining", 
+            int(goal_fat_g - total_fat_grams),
+            int(goal_protein_g - total_protein_grams),
+            int(goal_carb_g - total_carb_grams),
+            int(goal_calories - total_calories))
+
+        xref_daily_goal = XrefDailyFood(-1, -1,
+            "Your Daily Goal",
+            int(goal_fat_g),
+            int(goal_protein_g),
+            int(goal_carb_g),
+            int(goal_calories))
+
+        xref_totals = XrefDailyFood(-1, -1,
+            "Totals",
+            int(total_fat_grams),
+            int(total_protein_grams),
+            int(total_carb_grams),
+            int(total_calories))
+        return [xref_remaining, xref_daily_goal, xref_totals]
+        
+

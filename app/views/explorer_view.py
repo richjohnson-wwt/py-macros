@@ -60,7 +60,7 @@ class RecipeListView(wx.Notebook):
         self.recipe_list_view.InsertColumn(1, 'Name', width=360)
 
         list_box_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        list_box_sizer.Add(self.recipe_list_view, 1, wx.EXPAND)
+        list_box_sizer.Add(self.recipe_list_view, 1, wx.EXPAND | wx.ALL)
         tab_recipes.SetSizer(list_box_sizer)
         parent.AddPage(tab_recipes, "Recipes")
 

@@ -14,10 +14,12 @@ class MainPresenter:
         self.model.notify(page)
 
 class DailyPresenter:
-    def __init__(self, model, view, interactor, food_model, macro_calculator):
+    def __init__(self, model, view, interactor, food_model, recipe_model, goal_model, macro_calculator):
         self.model = model
         self.view = view
         self.food_model = food_model
+        self.recipe_model = recipe_model
+        self.goal_model = goal_model
         self.macro_calculator = macro_calculator
         interactor.install(self, view)
 
@@ -46,9 +48,34 @@ class DailyPresenter:
         self.view.add_weight_text_ctrl.SetValue(str(daily_food.weight))
         self.view.reset_daily_multiplier(self.model.serving_increments, 5)
         food_list = self.model.get_xref_daily_foods(daily_food.daily_food_id)
-        for f in food_list:
-            logger.info("Food xref id: " + str(f.xref_id))
+        for food in food_list:
+            logger.info("Carb: " + str(food.carbs))
         self.view.set_daily_foods(food_list)
+        self.load_totals()
+
+    def load_totals(self):
+        bonus_calories = self.view.add_activity_text_ctrl.GetValue()
+        goal = self.goal_model.get_goal()
+        goal_fat_grams = self.macro_calculator.get_goal_fat_grams(goal, bonus_calories)
+        goal_protein_grams = self.macro_calculator.get_goal_protein_grams(goal, bonus_calories)
+        goal_carb_grams = self.macro_calculator.get_goal_carb_grams(goal, bonus_calories)
+        goal_calories = self.macro_calculator.get_goal_calories(goal, bonus_calories)
+
+        totals_list = self.model.get_totals(bonus_calories, goal, goal_fat_grams, goal_protein_grams, goal_carb_grams, goal_calories)
+        self.view.set_daily_totals(totals_list)
+
+        totals = totals_list[2]
+        total_fat = totals.fat
+        total_protein = totals.protein
+        total_carb = totals.carbs
+        total_calories = totals.calories
+
+        percent_fat = self.macro_calculator.calculate_fat_percent(total_fat, total_calories)
+        percent_protein = self.macro_calculator.calculate_protein_percent(total_protein, total_calories)
+        percent_carb = self.macro_calculator.calculate_carb_percent(total_carb, total_calories)
+        self.view.percent_fat_text_ctrl.SetValue(str(percent_fat))
+        self.view.percent_protein_text_ctrl.SetValue(str(percent_protein))
+        self.view.percent_carbs_text_ctrl.SetValue(str(percent_carb))
 
     def on_add_activity(self):
         logger.info("Adding activity")
@@ -69,22 +96,43 @@ class DailyPresenter:
             food_item_to_add.name + " x " + str(multiplier),
             calculated_macros.fat_grams,
             calculated_macros.protein_grams,
-            calculated_macros.carb_grams,
+            calculated_macros.carbs_grams,
             calculated_macros.calories
         )
         self.load_view_from_model()
 
     def on_add_recipe(self):
         logger.info("Adding recipe")
-        pass
+        daily_food = self.model.get_daily_food()
+        recipe = self.recipe_model.get_recipe()
+        ingredients = self.recipe_model.get_ingredients()
+        multiplier = self.view.unit_combo_box.GetValue()
+        calculated_macros = self.macro_calculator.calculate_recipe_macros(recipe.servings, ingredients, multiplier)
+        self.model.add_xref_daily_food(
+            daily_food.daily_food_id,
+            recipe.name + " x " + str(multiplier),
+            calculated_macros.fat_grams,
+            calculated_macros.protein_grams,
+            calculated_macros.carb_grams,
+            calculated_macros.calories
+        )
+        self.load_view_from_model()
+
 
     def on_add_one_off(self):
         logger.info("Adding one-off")
-        pass
+        # prompt user with the one-off dialog
+        values = self.view.prompt_user_for_one_off()
+        if values is not None:
+            daily_food = self.model.get_daily_food()
+            self.model.add_xref_daily_food(daily_food.daily_food_id, values[0], values[1], values[2], values[3], values[4])
+        self.load_view_from_model()
 
+        
     def delete_food(self):
         logger.info("Deleting food")
         self.model.delete_xref_daily_food()
+        self.load_view_from_model()
 
     def on_food_item_selected(self, xref_id):
         logger.debug("Food selected: " + xref_id)
@@ -186,6 +234,7 @@ class RecipePresenter:
     def on_add_recipe(self):
         self.model.create_new_recipe()
         self.view.set_recipe(self.model.get_recipe())
+        self.view.set_ingredients([])
 
     def on_add_ingredient(self):
         food = self.food_model.get_food()

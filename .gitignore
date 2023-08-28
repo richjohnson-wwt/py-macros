@@ -3,4 +3,5 @@ __pycache__
 venv/*
 my-macro.sqlite3
 my-macro-old.sqlite3
+my-macro-py.sqlite3
 .DS_Store

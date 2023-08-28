@@ -1,13 +1,13 @@
 
 import wx
-import wx.lib.agw.aui as aui
+import wx.aui
 
 class MyAuiManager(wx.Frame):
     def __init__(self):
         self.app = wx.App(0)
         wx.Frame.__init__(self, None, -1, "Py In/Out", size=(1400, 900))
 
-        self._mgr = aui.AuiManager(self)
+        self._mgr = wx.aui.AuiManager(self)
 
     def install_left(self, view, title=""):
         self.explorer_pane = view

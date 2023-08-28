@@ -10,7 +10,7 @@ class MainWindow(wx.Panel):
         wx.Panel.__init__(self, parent)
         self.main_panel = wx.Panel(self)
         self.mainsizer = wx.BoxSizer(wx.HORIZONTAL)
-        self.notebook = wx.Notebook(self.main_panel, style=wx.BK_DEFAULT, size=(800, 600))
+        self.notebook = wx.Notebook(self.main_panel)
         parent.install_center(self, "Main")
 
     def notebook_ctrl(self):
@@ -18,6 +18,6 @@ class MainWindow(wx.Panel):
 
     def post_init(self):
         logger.info("Post init")
-        self.mainsizer.Add(self.notebook, 5, wx.ALL, 10)
+        self.mainsizer.Add(self.notebook, proportion=1, flag=wx.EXPAND | wx.ALL)
         self.main_panel.SetSizerAndFit(self.mainsizer)
         self.Centre()
