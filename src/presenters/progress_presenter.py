@@ -1,7 +1,7 @@
 
 from datetime import datetime, timedelta
 
-from app import app_logging
+from src import app_logging
 
 from weight_loss_projector import WeightLossProjector
 

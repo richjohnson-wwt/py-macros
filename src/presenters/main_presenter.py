@@ -1,5 +1,5 @@
 
-from app import app_logging
+from src import app_logging
 
 logger = app_logging.get_app_logger(__name__)
 

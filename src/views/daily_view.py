@@ -6,7 +6,7 @@ from one_off_dialog import OneOffDialog
 
 from layout_helper import create_label_with_text_sizer
 
-from app import app_logging
+from src import app_logging
 
 logger = app_logging.get_app_logger(__name__)
 

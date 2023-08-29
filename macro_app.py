@@ -1,8 +1,8 @@
 import logging
 import sys
-sys.path.append('app/views')
-sys.path.append('app/presenters')
-sys.path.append('app/models')
+sys.path.append('src/views')
+sys.path.append('src/presenters')
+sys.path.append('src/models')
 
 from aui_manager import MyAuiManager
 import explorer_presenter
@@ -36,7 +36,7 @@ import unit_model
 
 import wx
 
-from app import app_logging
+from src import app_logging
 
 logger = app_logging.get_app_logger(__name__)
 

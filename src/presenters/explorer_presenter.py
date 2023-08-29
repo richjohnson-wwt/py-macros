@@ -1,6 +1,6 @@
 
 
-from app import app_logging
+from src import app_logging
 
 logger = app_logging.get_app_logger(__name__)
 
@@ -9,7 +9,6 @@ class FoodListPresenter:
     def __init__(self, model, view, interactor, explorer_model):
         self.view = view
         self.model = model
-        # self.interactor = interactor
         interactor.install(self, self.view)
         self.explorer_model = explorer_model
         self.model.register('list_changed', self, self.food_list_changed)
@@ -24,7 +23,6 @@ class FoodListPresenter:
         foods = self.model.get_foods()
         logger.debug("foods size: %s", len(foods))
         self.view.set_foods(foods)
-        # self.interactor.install(self, self.view)
 
     def food_list_changed(self):
         logger.info("Notified about Food list changed")
@@ -47,7 +45,6 @@ class RecipeListPresenter:
         self.view = view
         self.model = model
         self.explorer_model = explorer_model
-        # self.interactor = interactor
         interactor.install(self, self.view)
         
         self.model.register('list_changed', self, self.recipe_list_changed)
@@ -60,7 +57,6 @@ class RecipeListPresenter:
     def post_init(self):
         logger.info("post_init recipe list")
         self.view.set_recipes(self.model.get_recipes())
-        # self.interactor.install(self, self.view)
 
     def recipe_list_changed(self):
         logger.info("Notified about Recipe list changed")

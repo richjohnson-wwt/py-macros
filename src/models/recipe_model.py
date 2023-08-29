@@ -1,7 +1,7 @@
 
 import sqlite3
 
-from app import app_logging
+from src import app_logging
 from food_model import Food
 from unit_model import Unit
 
