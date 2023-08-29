@@ -54,17 +54,17 @@ class MacroCalculator:
     def get_goal_fat_grams(self, goal, bonus):
         fat_calories = (float(goal.fat_percent) * (float(goal.bmr_calories) + float(bonus))) / 100
         fat_grams = fat_calories / 9
-        return fat_grams
+        return int(round(fat_grams))
 
     def get_goal_protein_grams(self, goal, bonus):
         protein_calories = (float(goal.protein_percent) * (float(goal.bmr_calories) + float(bonus))) / 100
         protein_grams = protein_calories / 4
-        return protein_grams
+        return int(round(protein_grams))
 
     def get_goal_carb_grams(self, goal, bonus):
         carbs_calories = (float(goal.carbs_percent) * (float(goal.bmr_calories) + float(bonus))) / 100
         carbs_grams = carbs_calories / 4
-        return carbs_grams
+        return int(round(carbs_grams))
 
     def get_goal_calories(self, goal, bonus):
         calories = (float(goal.bmr_calories) + float(bonus))
@@ -78,7 +78,7 @@ class MacroCalculator:
         if fat_g > 0:
             fat_calories = total_calories_f - (total_calories_f - (fat_g_f * 9))
             percent_fat = (fat_calories / total_calories_f) * 100
-        return int(percent_fat)
+        return int(round(percent_fat))
 
     def calculate_protein_percent(self, protein_g, total_calories):
         percent_protein = 0
@@ -87,7 +87,7 @@ class MacroCalculator:
         if protein_g > 0:
             protein_calories = total_calories_p - (total_calories_p - (protein_g_p * 4))
             percent_protein = (protein_calories / total_calories_p) * 100
-        return int(percent_protein)
+        return int(round(percent_protein))
 
     def calculate_carb_percent(self, carb_g, total_calories):
         percent_carb = 0
@@ -96,4 +96,4 @@ class MacroCalculator:
         if carb_g > 0:
             carb_calories = total_calories_c - (total_calories_c - (carb_g_c * 4))
             percent_carb = (carb_calories / total_calories_c) * 100
-        return int(percent_carb)
+        return int(round(percent_carb))

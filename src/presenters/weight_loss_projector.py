@@ -35,7 +35,7 @@ class WeightLossProjector:
         return (self.slope * day) + self.intercept
 
     def number_of_weeks_to_reach_goal(self, goal):
-        return ((int(goal) - self.intercept) / self.slope) / 7
+        return int(round(((int(goal) - self.intercept) / self.slope) / 7))
 
     def sum(self, values):
         values_sumed = 0
