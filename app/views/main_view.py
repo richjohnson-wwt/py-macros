@@ -1,23 +1,28 @@
 
+from daily_view import DailyWindow
+from food_view import FoodWindow
+from recipe_view import RecipeWindow
+from goal_view import GoalWindow
 import wx
 
 from app import app_logging
 
 logger = app_logging.get_app_logger(__name__)
 
-class MainWindow(wx.Panel):
+class MainWindow(wx.Notebook):
     def __init__(self, parent):
-        wx.Panel.__init__(self, parent)
-        self.main_panel = wx.Panel(self)
-        self.mainsizer = wx.BoxSizer(wx.HORIZONTAL)
-        self.notebook = wx.Notebook(self.main_panel)
-        parent.install_center(self, "Main")
+        wx.Notebook.__init__(self, parent, id=wx.ID_ANY, style=wx.NB_TOP, size=(400, 600))
+        self.macro_app_wx_frame = parent
+        self.daily_page = DailyWindow(self)
+        self.AddPage(self.daily_page, "Daily")
 
-    def notebook_ctrl(self):
-        return self.notebook
+        self.food_page = FoodWindow(self)
+        self.AddPage(self.food_page, "Food")
 
-    def post_init(self):
-        logger.info("Post init")
-        self.mainsizer.Add(self.notebook, proportion=1, flag=wx.EXPAND | wx.ALL)
-        self.main_panel.SetSizerAndFit(self.mainsizer)
-        self.Centre()
+        self.recipe_page = RecipeWindow(self)
+        self.AddPage(self.recipe_page, "Recipe")
+
+        self.goal_page = GoalWindow(self)
+        self.AddPage(self.goal_page, "Goal")
+
+

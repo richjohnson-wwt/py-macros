@@ -10,7 +10,7 @@ class MainInteractor:
     def install(self, presenter, view):
         self.presenter = presenter
         self.view = view
-        self.view.notebook.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.on_notebook_page_changed)
+        self.view.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.on_notebook_page_changed)
 
     def on_notebook_page_changed(self, event):
         logger.debug("Notebook page changed: %s", event.GetSelection())

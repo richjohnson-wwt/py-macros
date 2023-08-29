@@ -1,7 +1,7 @@
 
 import wx
 
-class RecipeWindow(wx.Notebook):
+class RecipeWindow(wx.Panel):
 
     def create_label_with_text_sizer(self, panel, label_text, text_ctrl):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -9,39 +9,39 @@ class RecipeWindow(wx.Notebook):
         sizer.Add(text_ctrl, wx.ALIGN_LEFT)
         return sizer
 
-    def __init__(self, parent):
-        wx.Notebook.__init__(self, parent)
-        top_panel = wx.Panel(parent)
+    def __init__(self, notebook):
+        wx.Panel.__init__(self, notebook, id=wx.ID_ANY)
+        # top_panel = wx.Panel(self)
         top_sizer = wx.BoxSizer(wx.VERTICAL)
 
-        self.recipe_id_text_ctrl = wx.TextCtrl(top_panel, -1, "", wx.DefaultPosition, wx.Size(200, 20), wx.TE_READONLY)
-        top_sizer.Add(self.create_label_with_text_sizer(top_panel, "ID", self.recipe_id_text_ctrl), 0, wx.ALL, 10)
+        self.recipe_id_text_ctrl = wx.TextCtrl(self, -1, "", wx.DefaultPosition, wx.Size(200, 20), wx.TE_READONLY)
+        top_sizer.Add(self.create_label_with_text_sizer(self, "ID", self.recipe_id_text_ctrl), 0, wx.ALL, 10)
 
-        self.recipe_name_text_ctrl = wx.TextCtrl(top_panel, -1, "", wx.DefaultPosition, wx.Size(200, 20))
-        top_sizer.Add(self.create_label_with_text_sizer(top_panel, "Name", self.recipe_name_text_ctrl), 0, wx.ALL, 10)
+        self.recipe_name_text_ctrl = wx.TextCtrl(self, -1, "", wx.DefaultPosition, wx.Size(200, 20))
+        top_sizer.Add(self.create_label_with_text_sizer(self, "Name", self.recipe_name_text_ctrl), 0, wx.ALL, 10)
 
-        self.recipe_description_text_ctrl = wx.TextCtrl(top_panel, -1, "", wx.DefaultPosition, wx.Size(200, 20))
-        top_sizer.Add(self.create_label_with_text_sizer(top_panel, "Description", self.recipe_description_text_ctrl), 0, wx.ALL, 10)
+        self.recipe_description_text_ctrl = wx.TextCtrl(self, -1, "", wx.DefaultPosition, wx.Size(200, 20))
+        top_sizer.Add(self.create_label_with_text_sizer(self, "Description", self.recipe_description_text_ctrl), 0, wx.ALL, 10)
 
-        self.recipe_instructions_text_ctrl = wx.TextCtrl(top_panel, -1, "", wx.DefaultPosition, wx.Size(200, 20))
-        top_sizer.Add(self.create_label_with_text_sizer(top_panel, "Instructions", self.recipe_instructions_text_ctrl), 0, wx.ALL, 10)
+        self.recipe_instructions_text_ctrl = wx.TextCtrl(self, -1, "", wx.DefaultPosition, wx.Size(200, 20))
+        top_sizer.Add(self.create_label_with_text_sizer(self, "Instructions", self.recipe_instructions_text_ctrl), 0, wx.ALL, 10)
 
-        self.recipe_url_text_ctrl = wx.TextCtrl(top_panel, -1, "", wx.DefaultPosition, wx.Size(200, 20))
-        top_sizer.Add(self.create_label_with_text_sizer(top_panel, "URL", self.recipe_url_text_ctrl), 0, wx.ALL, 10)
+        self.recipe_url_text_ctrl = wx.TextCtrl(self, -1, "", wx.DefaultPosition, wx.Size(200, 20))
+        top_sizer.Add(self.create_label_with_text_sizer(self, "URL", self.recipe_url_text_ctrl), 0, wx.ALL, 10)
 
-        self.recipe_servings_text_ctrl = wx.TextCtrl(top_panel, -1, "", wx.DefaultPosition, wx.Size(200, 20))
-        top_sizer.Add(self.create_label_with_text_sizer(top_panel, "Servings", self.recipe_servings_text_ctrl), 0, wx.ALL, 10)
+        self.recipe_servings_text_ctrl = wx.TextCtrl(self, -1, "", wx.DefaultPosition, wx.Size(200, 20))
+        top_sizer.Add(self.create_label_with_text_sizer(self, "Servings", self.recipe_servings_text_ctrl), 0, wx.ALL, 10)
 
-        ingredient_static_box = wx.StaticBox(top_panel, -1, "Ingredients")
+        ingredient_static_box = wx.StaticBox(self, -1, "Ingredients")
         ingredient_box_sizer = wx.StaticBoxSizer(ingredient_static_box, wx.VERTICAL)
 
         first_row_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        self.add_food_with_multiplier_button = wx.Button(top_panel, -1, "Add Food with Multiplier")
-        self.ingredient_multiplier_text_ctrl = wx.TextCtrl(top_panel, -1, "1", wx.DefaultPosition, wx.Size(100, 20))
+        self.add_food_with_multiplier_button = wx.Button(self, -1, "Add Food with Multiplier")
+        self.ingredient_multiplier_text_ctrl = wx.TextCtrl(self, -1, "1", wx.DefaultPosition, wx.Size(100, 20))
         first_row_sizer.Add(self.add_food_with_multiplier_button, 0, wx.ALL, 10)
         first_row_sizer.Add(self.ingredient_multiplier_text_ctrl, 0, wx.ALL, 10)
 
-        self.ingredients_list_view = wx.ListView(top_panel, -1, style=wx.LC_REPORT)
+        self.ingredients_list_view = wx.ListView(self, -1, style=wx.LC_REPORT)
         list_sizer = wx.BoxSizer(wx.VERTICAL)
         self.ingredients_list_view.AppendColumn("ID")
         self.ingredients_list_view.AppendColumn("Name")
@@ -61,9 +61,9 @@ class RecipeWindow(wx.Notebook):
         top_sizer.Add(ingredient_box_sizer, 1, wx.EXPAND, 10)
 
         button_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        self.apply_button = wx.Button(top_panel, -1, "Apply")
-        self.cancel_button = wx.Button(top_panel, -1, "Cancel")
-        self.new_button = wx.Button(top_panel, -1, "New Recipe")
+        self.apply_button = wx.Button(self, -1, "Apply")
+        self.cancel_button = wx.Button(self, -1, "Cancel")
+        self.new_button = wx.Button(self, -1, "New Recipe")
 
         button_sizer.Add(self.apply_button, 0, wx.ALL, 10)
         button_sizer.Add(self.cancel_button, 0, wx.ALL, 10)
@@ -71,9 +71,7 @@ class RecipeWindow(wx.Notebook):
 
         top_sizer.Add(button_sizer, 0, wx.ALL, 10)
 
-        top_panel.SetSizer(top_sizer)
-
-        parent.AddPage(top_panel, "Recipe")
+        self.SetSizer(top_sizer)
 
     def set_recipe(self, recipe):
         self.recipe_id_text_ctrl.SetValue(str(recipe.id))

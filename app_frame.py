@@ -10,5 +10,6 @@ class AppFrame(wx.Frame):
         self.macro_app.create()
 
     def post_init(self):
+        self.macro_app.start()
         self.Show()
         self.app.MainLoop()

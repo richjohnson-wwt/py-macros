@@ -43,6 +43,7 @@ class RecipeModel:
             callback()
 
     def get_recipes(self):
+        logger.debug("Getting recipes")
         recipes = []
         for row in self.cursor.execute('SELECT * FROM Recipes'):
             recipes.append(Recipe(row[0], row[1], row[2], row[3], row[4], row[5]))

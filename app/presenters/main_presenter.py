@@ -155,8 +155,11 @@ class FoodPresenter:
             self.is_listening = False
             self.view.set_food(self.model.get_food(), self.unit_model.get_units())
             self.is_listening = True
+        else:
+            logger.debug("Notified about Food selected but not listening")
 
     def post_init(self):
+        logger.info("Post init FoodPresenter")
         self.view.set_food(self.model.get_food(), self.unit_model.get_units())
         self.view.apply_button.Enable(False)
         self.view.cancel_button.Enable(False)
