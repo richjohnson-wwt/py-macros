@@ -90,9 +90,6 @@ class DailyModel:
         xref_daily_foods = []
         for row in self.cursor.execute('SELECT * FROM xref_daily_foods WHERE daily_food_id = ?', (str(daily_food_id),)):
             xref_daily_foods.append(XrefDailyFood(row[0], row[1], row[2], row[3], row[4], row[5], row[6]))
-
-        for x in xref_daily_foods:
-            logger.info("XCarbs: " + str(x.carbs))
         return xref_daily_foods
 
     def get_totals(self, bonus_calories, goal, goal_fat_g, goal_protein_g, goal_carb_g, goal_calories):

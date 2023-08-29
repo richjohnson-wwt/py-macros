@@ -21,10 +21,10 @@ class FoodListWindow(wx.Panel):
         wx.Panel.__init__(self, notebook, id=wx.ID_ANY)
         top_sizer = wx.BoxSizer(wx.VERTICAL)
 
-        search_text_ctrl = wx.SearchCtrl(self, id=wx.ID_ANY)
+        self.search_text_ctrl = wx.SearchCtrl(self, id=wx.ID_ANY)
         search_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        search_text_ctrl.ShowCancelButton(True)
-        search_sizer.Add(search_text_ctrl, 1, wx.EXPAND)
+        self.search_text_ctrl.ShowCancelButton(True)
+        search_sizer.Add(self.search_text_ctrl, 1, wx.EXPAND)
         top_sizer.Add(search_sizer, 0, wx.EXPAND)
 
         self.food_list_view = wx.ListView(self, wx.ID_ANY)

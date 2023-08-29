@@ -111,10 +111,10 @@ class DailyPresenter:
         self.model.add_xref_daily_food(
             daily_food.daily_food_id,
             recipe.name + " x " + str(multiplier),
-            calculated_macros.fat_grams,
-            calculated_macros.protein_grams,
-            calculated_macros.carb_grams,
-            calculated_macros.calories
+            int(calculated_macros.fat_grams),
+            int(calculated_macros.protein_grams),
+            int(calculated_macros.carb_grams),
+            int(calculated_macros.calories)
         )
         self.load_view_from_model()
 
@@ -172,7 +172,9 @@ class FoodPresenter:
         self.view.cancel_button.Enable(False)
 
     def on_add_food(self):
+        logger.debug("Adding food")
         self.model.create_new_food()
+        self.update()
 
     def on_apply_food(self):
         self.view.apply_button.Enable(False)
@@ -189,6 +191,7 @@ class FoodPresenter:
             self.view.food_quantity_text_ctrl.GetValue(),
             unit_id,
             self.view.food_popularity_text_ctrl.GetValue())
+        self.update()
 
     def on_cancel_food(self):
         self.view.apply_button.Enable(False)
@@ -238,6 +241,7 @@ class RecipePresenter:
         self.model.create_new_recipe()
         self.view.set_recipe(self.model.get_recipe())
         self.view.set_ingredients([])
+        self.update()
 
     def on_add_ingredient(self):
         food = self.food_model.get_food()
@@ -276,11 +280,13 @@ class RecipePresenter:
         for item in items:
             unit = self.unit_model.get_unit_by_name(item[1])
             self.model.add_recipe_ingredient(item[0], item[2], unit.unit_id)
+        self.update()
 
     def on_cancel_recipe(self):
         self.view.apply_button.Enable(False)
         self.view.new_button.Enable(True)
         self.view.cancel_button.Enable(False)
+        self.update()
 
     def on_recipe_changed(self):
         if self.is_listening:

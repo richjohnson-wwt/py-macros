@@ -36,14 +36,9 @@ class ProgressWindow(wx.Panel):
         right_static_box_sizer.Add(create_label_with_text_sizer(top_panel, "Progress Date: ", self.progress_date_text_ctrl, ), 0, wx.ALL, 10)
         self.goal_date_text_ctrl = wx.TextCtrl(top_panel, -1, "", wx.DefaultPosition, wx.Size(100, 20))
         right_static_box_sizer.Add(create_label_with_text_sizer(top_panel, "Goal Date: ", self.goal_date_text_ctrl, ), 0, wx.ALL, 10)
-        self.actual_weight_text_ctrl = wx.TextCtrl(top_panel, -1, "", wx.DefaultPosition, wx.Size(100, 20))
-        right_static_box_sizer.Add(create_label_with_text_sizer(top_panel, "Actual Weight: ", self.actual_weight_text_ctrl, ), 0, wx.ALL, 10)
+        self.actual_weight_diff_text_ctrl = wx.TextCtrl(top_panel, -1, "", wx.DefaultPosition, wx.Size(100, 20))
+        right_static_box_sizer.Add(create_label_with_text_sizer(top_panel, "Actual Weight +/-: ", self.actual_weight_diff_text_ctrl, ), 0, wx.ALL, 10)
 
         top_sizer.Add(left_static_box_sizer, 0, wx.GROW | wx.ALL, 10)
         top_sizer.Add(right_static_box_sizer, 0, wx.GROW | wx.ALL, 10)
         top_panel.SetSizerAndFit(top_sizer)
-        parent.install_bottom(self)
-
-
-
-        

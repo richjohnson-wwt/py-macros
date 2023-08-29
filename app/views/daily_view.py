@@ -13,8 +13,6 @@ logger = app_logging.get_app_logger(__name__)
 class DailyWindow(wx.Panel):
     def __init__(self, notebook):
         wx.Panel.__init__(self, notebook, id=wx.ID_ANY)
-        # self.parent = notebook
-        # top_panel = wx.Panel(self)
         
         top_sizer = wx.BoxSizer(wx.VERTICAL)
 
@@ -127,7 +125,7 @@ class DailyWindow(wx.Panel):
 
     def prompt_user_for_one_off(self):
         # prompt user with the one_off_dialog
-        one_off_dlg = OneOffDialog(self.parent)
+        one_off_dlg = OneOffDialog(self.Parent)
         if one_off_dlg.ShowModal() == wx.ID_OK:
             logger.info("User chose to add one-off")
             return [one_off_dlg.name_text_ctrl.GetValue(),

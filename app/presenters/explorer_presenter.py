@@ -34,6 +34,14 @@ class FoodListPresenter:
         logger.info("Deleting food")
         self.explorer_model.delete_food()
 
+    def on_search(self, search_string):
+        foods = self.model.get_foods()
+        filtered_foods = [food for food in foods if search_string.lower() in food.name.lower()]
+        self.view.set_foods(filtered_foods)
+
+    def on_cancel(self, event):
+        self.view.set_foods(self.model.get_foods())
+
 class RecipeListPresenter:
     def __init__(self, model, view, interactor, explorer_model):
         self.view = view

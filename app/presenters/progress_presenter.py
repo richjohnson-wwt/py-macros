@@ -16,9 +16,38 @@ class ProgressPresenter:
         self.view = view
 
     def post_init(self):
+        self.populate_calorie_section()
         self.populate_progress_date()
         self.populate_goal_date()
+        self.populate_actual_weight_diff()
         
+    def populate_calorie_section(self):
+        dt_end_date = datetime.strptime(self.daily_model.get_today_date(), DATE_FORMAT)
+        time_delta = timedelta(days=7)
+        dt_start_date = dt_end_date - time_delta
+        daily_foods_by_date_range = self.daily_model.get_daily_food_by_date_range(dt_start_date, dt_end_date)
+        exercise_calories = 0
+        xref_daily_foods = []
+        for daily_food in daily_foods_by_date_range:
+            exercise_calories += daily_food.exercise
+            xref_daily_foods += self.daily_model.get_xref_daily_foods(daily_food.daily_food_id)
+        self.view.activity_calories_text_ctrl.SetValue(str(exercise_calories))
+
+        total_calories = 0
+        for xref_daily_food in xref_daily_foods:
+            total_calories += xref_daily_food.calories
+        self.view.consumed_calories_text_ctrl.SetValue(str(total_calories))
+
+        bmr = self.goal_model.get_goal().bmr_calories
+        seven_days_calories = bmr * 7
+        seven_days_calories_plus_exercise = round(seven_days_calories + exercise_calories, 2)
+        deficit = seven_days_calories_plus_exercise - total_calories
+        pounds_lost = round(deficit / 3500, 2) * -1
+        self.view.expected_weight_delta_text_ctrl.SetValue(str(pounds_lost))
+        self.view.bmr_plus_exercise_text_ctrl.SetValue(str(seven_days_calories_plus_exercise))
+        self.view.net_in_out_text_ctrl.SetValue(str(deficit))
+        pass
+
     def populate_goal_date(self):
         end_date = self.daily_model.get_today_date()
         start_date = self.goal_model.get_goal().start_date
@@ -86,3 +115,29 @@ class ProgressPresenter:
         future_goal_date = dt_start_date + time_delta
 
         self.view.progress_date_text_ctrl.SetValue(str(future_goal_date.strftime(DATE_FORMAT)))
+
+    def populate_actual_weight_diff(self):
+        dt_end_date = datetime.strptime(self.daily_model.get_today_date(), DATE_FORMAT)
+        time_delta = timedelta(days=7)
+        dt_start_date = dt_end_date - time_delta
+
+        logger.debug("start_date: " + str(dt_start_date) + " end_date: " + str(dt_end_date))
+
+        daily_foods_by_date_range = self.daily_model.get_daily_food_by_date_range(dt_start_date, dt_end_date)
+        weights = []
+        for daily_food in daily_foods_by_date_range:
+            if daily_food.weight > 0:
+                weights.append(daily_food.weight)
+
+        first_weight = 0
+        first_done = False
+        last_weight = 0
+        for weight in weights:
+            if weight > first_weight:
+                if not first_done:
+                    first_weight = weight
+                    first_done = True
+            last_weight = weight
+        logger.debug("First weight: " + str(first_weight) + " Last weight: " + str(last_weight))
+        weight_diff = last_weight - first_weight
+        self.view.actual_weight_diff_text_ctrl.SetValue("{:.1f}".format(weight_diff))

@@ -67,10 +67,6 @@ class MacroApp(wx.Frame):
         
         _daily_model = daily_model.DailyModel()
         _goal_model = goal_model.GoalModel()
-        # _daily_view = daily_view.DailyWindow(parent)
-        # _food_view = food_view.FoodWindow(parent)
-        # _recipe_view = recipe_view.RecipeWindow(parent)
-        # _goal_view = goal_view.GoalWindow(parent)
         self.main_window = main_view.MainWindow(parent)
         _main_presenter = main_presenter.MainPresenter(
             _main_model,
@@ -110,22 +106,26 @@ class MacroApp(wx.Frame):
             self.main_window.goal_page,
             main_interactor.GoalInteractor()
         )
+        self.progress_window = progress_view.ProgressWindow(parent)
+        self.progress_presenter = progress_presenter.ProgressPresenter(
+            _daily_model,
+            _goal_model,
+            self.progress_window
+        )
 
         self._mgr = wx.aui.AuiManager()
         self._mgr.SetManagedWindow(parent)
 
 
-    def create(self):
+    def create_aui(self):
         logging.info("Creating app")
         self._mgr.AddPane(self.explorer_window, wx.LEFT, "Explorer")
 
         self._mgr.AddPane(self.main_window, wx.CENTER, "Main")
 
+        self._mgr.AddPane(self.progress_window, wx.BOTTOM, "Progress")
 
-        text2 = wx.TextCtrl(self.wx_frame, -1, 'Pane 3 - sample text',
-                            wx.DefaultPosition, wx.Size(200,150),
-                            wx.NO_BORDER | wx.TE_MULTILINE)
-        self._mgr.AddPane(text2, wx.BOTTOM, "Pane 3")
+        self._mgr.GetPane(self.progress_window).MinSize(-1, 200)
 
         self._mgr.Update()
         
@@ -137,3 +137,4 @@ class MacroApp(wx.Frame):
         self.food_presenter.post_init()
         self.recipe_presenter.post_init()
         self.goal_presenter.post_init()
+        self.progress_presenter.post_init()
