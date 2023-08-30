@@ -37,7 +37,7 @@ class FoodListPresenter:
         filtered_foods = [food for food in foods if search_string.lower() in food.name.lower()]
         self.view.set_foods(filtered_foods)
 
-    def on_cancel(self, event):
+    def on_cancel(self):
         self.view.set_foods(self.model.get_foods())
 
 class RecipeListPresenter:

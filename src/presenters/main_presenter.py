@@ -1,4 +1,5 @@
-
+from datetime import datetime, timedelta
+import pandas as pd
 from src import app_logging
 
 logger = app_logging.get_app_logger(__name__)
@@ -70,12 +71,12 @@ class DailyPresenter:
         total_carb = totals.carbs
         total_calories = totals.calories
 
-        percent_fat = self.macro_calculator.calculate_fat_percent(total_fat, total_calories)
-        percent_protein = self.macro_calculator.calculate_protein_percent(total_protein, total_calories)
-        percent_carb = self.macro_calculator.calculate_carb_percent(total_carb, total_calories)
-        self.view.percent_fat_text_ctrl.SetValue(str(percent_fat))
-        self.view.percent_protein_text_ctrl.SetValue(str(percent_protein))
-        self.view.percent_carbs_text_ctrl.SetValue(str(percent_carb))
+        # percent_fat = self.macro_calculator.calculate_fat_percent(total_fat, total_calories)
+        # percent_protein = self.macro_calculator.calculate_protein_percent(total_protein, total_calories)
+        # percent_carb = self.macro_calculator.calculate_carb_percent(total_carb, total_calories)
+        # self.view.percent_fat_text_ctrl.SetValue(str(percent_fat))
+        # self.view.percent_protein_text_ctrl.SetValue(str(percent_protein))
+        # self.view.percent_carbs_text_ctrl.SetValue(str(percent_carb))
 
     def on_add_activity(self):
         logger.info("Adding activity")
@@ -118,7 +119,6 @@ class DailyPresenter:
         )
         self.load_view_from_model()
 
-
     def on_add_one_off(self):
         logger.info("Adding one-off")
         # prompt user with the one-off dialog
@@ -127,8 +127,7 @@ class DailyPresenter:
             daily_food = self.model.get_daily_food()
             self.model.add_xref_daily_food(daily_food.daily_food_id, values[0], values[1], values[2], values[3], values[4])
         self.load_view_from_model()
-
-        
+ 
     def delete_food(self):
         logger.info("Deleting food")
         self.model.delete_xref_daily_food()
@@ -313,3 +312,38 @@ class GoalPresenter:
 
     def post_init(self):
         self.view.set_goal(self.model.get_goal())
+
+
+class ChartPresenter:
+    def __init__(self, daily_model, goal_model, view, interactor):
+        self.daily_model = daily_model
+        self.goal_model = goal_model
+        self.view = view
+        interactor.install(self, view)
+        self.populate_chart_data()
+
+    def populate_chart_data(self):
+        # x = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        # y = [2, 5, 6, 7, 9, 12, 16, 19, 22]
+        end_date = self.daily_model.get_today_date()
+        start_date = self.goal_model.get_goal().start_date
+
+        dt_start = datetime.strptime(start_date, "%Y-%m-%d")
+        dt_end = datetime.strptime(end_date, "%Y-%m-%d")
+        days_elapsed = dt_end - dt_start
+
+        logger.debug("Days Elapsed: " + str(days_elapsed.days))
+        logger.debug("Date range is: " + str(start_date) + " to " + str(end_date))
+        daily_foods_by_date_range = self.daily_model.get_daily_food_by_date_range(start_date, end_date)
+        logger.debug("Daily foods by date range: " + str(len(daily_foods_by_date_range)))
+        weights = []
+        x_axis = []
+        x_value = 1
+        for daily_food in daily_foods_by_date_range:
+            if daily_food.weight > 0:
+                weights.append(daily_food.weight)
+                x_axis.append(x_value)
+                x_value += 1
+        weights.append(165)
+        x_axis.append(x_value + 1)
+        self.view.draw_chart(x_axis, weights)

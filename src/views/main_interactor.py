@@ -136,7 +136,14 @@ class RecipeInteractor:
         else:
             logger.debug("Not listening")
 
+
 class GoalInteractor:
+    def install(self, presenter, view):
+        self.presenter = presenter
+        self.view = view
+
+
+class ChartInteractor:
     def install(self, presenter, view):
         self.presenter = presenter
         self.view = view

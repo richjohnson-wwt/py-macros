@@ -3,6 +3,7 @@ from daily_view import DailyWindow
 from food_view import FoodWindow
 from recipe_view import RecipeWindow
 from goal_view import GoalWindow
+from chart_view import ChartWindow
 import wx
 
 from src import app_logging
@@ -24,5 +25,8 @@ class MainWindow(wx.Notebook):
 
         self.goal_page = GoalWindow(self)
         self.AddPage(self.goal_page, "Goal")
+
+        self.chart_page = ChartWindow(self)
+        self.AddPage(self.chart_page, "Chart")
 
 

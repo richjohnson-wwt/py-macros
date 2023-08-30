@@ -10,16 +10,49 @@ logger = app_logging.get_app_logger(__name__)
 DATE_FORMAT = "%Y-%m-%d"
 
 class ProgressPresenter:
-    def __init__(self, daily_model, goal_model, view):
+    def __init__(self, daily_model, goal_model, view, macro_calculator, daily_view):
         self.daily_model = daily_model
         self.goal_model = goal_model
         self.view = view
+        self.daily_view = daily_view
+        self.macro_calculator = macro_calculator
+        self.daily_model.register(self)
+        self.is_listening = False
 
     def post_init(self):
-        self.populate_calorie_section()
-        self.populate_progress_date()
-        self.populate_goal_date()
-        self.populate_actual_weight_diff()
+        self.is_listening = True
+        self.update()
+
+    def update(self):
+        if self.is_listening:
+            self.populate_calorie_section()
+            self.populate_progress_date()
+            self.populate_goal_date()
+            self.populate_actual_weight_diff()
+            self.populate_macro_chart()
+
+    def populate_macro_chart(self):
+        logger.debug("====Populating macro chart====")
+        bonus_calories = self.daily_view.add_activity_text_ctrl.GetValue()
+        goal = self.goal_model.get_goal()
+        goal_fat_grams = self.macro_calculator.get_goal_fat_grams(goal, bonus_calories)
+        goal_protein_grams = self.macro_calculator.get_goal_protein_grams(goal, bonus_calories)
+        goal_carb_grams = self.macro_calculator.get_goal_carb_grams(goal, bonus_calories)
+        goal_calories = self.macro_calculator.get_goal_calories(goal, bonus_calories)
+
+        totals_list = self.daily_model.get_totals(bonus_calories, goal, goal_fat_grams, goal_protein_grams, goal_carb_grams, goal_calories)
+
+        totals = totals_list[2]
+        total_fat = totals.fat
+        total_protein = totals.protein
+        total_carb = totals.carbs
+        total_calories = totals.calories
+        percent_fat = self.macro_calculator.calculate_fat_percent(total_fat, total_calories)
+        percent_protein = self.macro_calculator.calculate_protein_percent(total_protein, total_calories)
+        percent_carb = self.macro_calculator.calculate_carb_percent(total_carb, total_calories)
+        labels = 'Fat', 'Protein', 'Carbs'
+        sizes = [percent_fat, percent_protein, percent_carb]
+        self.view.draw_chart(labels, sizes)
         
     def populate_calorie_section(self):
         dt_end_date = datetime.strptime(self.daily_model.get_today_date(), DATE_FORMAT)

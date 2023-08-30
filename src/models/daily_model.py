@@ -32,9 +32,17 @@ class DailyModel:
         self.selected_date = todays_date
         self.selected_xref_id = 0
         self.serving_increments = ["0.1", "0.25", "0.33", "0.5", "0.75", "1", "1.5", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
-        
+        self.subscriber = None
+
+    def register(self, subscriber):
+        self.subscriber = subscriber
+
+    def notify(self):
+        self.subscriber.update()
+
     def set_selected_date(self, date):
         self.selected_date = date
+        self.notify()
 
     def set_selected_daily_food(self, xref_id):
         self.selected_xref_id = xref_id
@@ -56,6 +64,7 @@ class DailyModel:
         logger.info("Updating exercise calorie bonus: " + str(exercise_calorie_bonus))
         self.cursor.execute('UPDATE daily_food SET exercise_calorie_bonus = ? WHERE date = ?', (str(exercise_calorie_bonus), str(self.selected_date)))
         self.conn.commit()
+        self.notify()
 
     def get_daily_food(self):
         logger.info("Getting daily food")
@@ -74,16 +83,19 @@ class DailyModel:
         logger.info("Updating weight: " + str(weight))
         self.cursor.execute('UPDATE daily_food SET weight = ? WHERE date = ?', (str(weight), str(self.selected_date)))
         self.conn.commit()
+        self.notify()
 
     def delete_xref_daily_food(self):
         logger.info("Deleting xref daily food")
         self.cursor.execute('DELETE FROM xref_daily_foods WHERE id = ?', (self.selected_xref_id,))
         self.conn.commit()
+        self.notify()
 
     def add_xref_daily_food(self, daily_food_id, name, fat, protein, carb, calories):
         logger.info("Adding xref daily food")
         self.cursor.execute('INSERT INTO xref_daily_foods (daily_food_id, name, fat, protein, carb, calories) VALUES (?, ?, ?, ?, ?, ?)', (str(daily_food_id), name, fat, protein, carb, calories))
         self.conn.commit()
+        self.notify()
 
     def get_xref_daily_foods(self, daily_food_id):
         logger.info("Getting xref daily foods")

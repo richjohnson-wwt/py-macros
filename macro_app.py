@@ -22,7 +22,6 @@ import daily_model
 import daily_view
 import macro_calculator
 
-
 import food_model
 import food_view
 
@@ -106,16 +105,25 @@ class MacroApp(wx.Frame):
             self.main_window.goal_page,
             main_interactor.GoalInteractor()
         )
+
+        self.chart_presenter = main_presenter.ChartPresenter(
+            _daily_model,
+            _goal_model,
+            self.main_window.chart_page,
+            main_interactor.ChartInteractor()
+        )
+
         self.progress_window = progress_view.ProgressWindow(parent)
         self.progress_presenter = progress_presenter.ProgressPresenter(
             _daily_model,
             _goal_model,
-            self.progress_window
+            self.progress_window,
+            macro_calculator.MacroCalculator(),
+            self.main_window.daily_page
         )
 
         self._mgr = wx.aui.AuiManager()
         self._mgr.SetManagedWindow(parent)
-
 
     def create_aui(self):
         logging.info("Creating app")
@@ -125,7 +133,7 @@ class MacroApp(wx.Frame):
 
         self._mgr.AddPane(self.progress_window, wx.BOTTOM, "Progress")
 
-        self._mgr.GetPane(self.progress_window).MinSize(-1, 200)
+        self._mgr.GetPane(self.progress_window).MinSize(-1, 250)
 
         self._mgr.Update()
         
