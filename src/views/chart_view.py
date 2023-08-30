@@ -9,7 +9,9 @@ class ChartWindow(wx.Panel):
         wx.Panel.__init__(self, notebook, id=wx.ID_ANY)
 
         self.figure = plt.Figure()
+        self.figure.set_facecolor('darkgray')
         self.axes = self.figure.add_subplot(111)
+        self.axes.set_facecolor('darkgray')
 
     def draw_chart(self, x, y):
         x = np.array(x)

@@ -45,8 +45,10 @@ class ProgressWindow(wx.Panel):
         right_static_box = wx.StaticBox(top_panel, wx.ID_ANY, "&Today's Macros")
         right_static_box_sizer = wx.StaticBoxSizer(right_static_box, wx.VERTICAL)
         self.figure = plt.Figure()
+        self.figure.set_facecolor('darkgray')
         self.figure.set_size_inches(2, 2)
         self.axes = self.figure.add_subplot(111)
+        self.axes.set_facecolor('darkgray')
         self.canvas = FigureCanvas(top_panel, wx.ID_ANY, self.figure)
         right_static_box_sizer.Add(self.canvas, 1, wx.LEFT | wx.TOP | wx.GROW)
 
