@@ -12,7 +12,6 @@ class WeightLossProjector:
         _xy = []
         _x2 = []
         for i in range(1, len(self.y_values) + 1):
-            # logger.debug("i: " + str(i) + " y: " + str(self.y_values[i - 1]))
             _x.append(i)
             _xy.append(i * self.y_values[i - 1])
             _x2.append(i * i)

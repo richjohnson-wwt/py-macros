@@ -27,7 +27,6 @@ class DailyPresenter:
     def post_init(self):
         todays_date = self.model.get_today_date()
         logger.debug("Today's date: " + str(todays_date))
-        # self.create_daily_food_if_not_exists(todays_date)
         self.on_date_changed(todays_date)
 
     def create_daily_food_if_not_exists(self, the_date):
@@ -154,7 +153,6 @@ class FoodPresenter:
 
     def notebook_page_change(self, message):
         logger.debug("FoodPresenter - Notebook page changed: %s", message)
-        # self.is_listening = True
         self.view.new_button.Enable(True)
         self.view.apply_button.Enable(False)
         self.view.cancel_button.Enable(False)
@@ -223,7 +221,6 @@ class RecipePresenter:
         self.view.new_button.Enable(True)
         self.view.apply_button.Enable(False)
         self.view.cancel_button.Enable(False)
-        # set view with food selected in model
 
     def on_add_recipe(self):
         self.model.create_new_recipe()
@@ -312,8 +309,6 @@ class ChartPresenter:
         self.populate_chart_data()
 
     def populate_chart_data(self):
-        # x = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-        # y = [2, 5, 6, 7, 9, 12, 16, 19, 22]
         end_date = self.daily_model.get_today_date()
         start_date = self.goal_model.get_goal().start_date
 

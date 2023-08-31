@@ -5,7 +5,6 @@ from layout_helper import create_label_with_text_sizer
 class GoalWindow(wx.Panel):
     def __init__(self, notebook):
         wx.Panel.__init__(self, notebook, id=wx.ID_ANY)
-        # top_panel = wx.Panel(self)
         top_sizer = wx.BoxSizer(wx.VERTICAL)
         
         self.start_date_text_ctrl = wx.TextCtrl(self, -1, "", wx.DefaultPosition, wx.Size(200, 20))

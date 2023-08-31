@@ -6,7 +6,6 @@ class FoodWindow(wx.Panel):
 
     def __init__(self, notebook):
         wx.Panel.__init__(self, notebook, id=wx.ID_ANY)
-        # top_panel = wx.Panel(self)
         top_sizer = wx.BoxSizer(wx.VERTICAL)
 
         self.food_id_text_ctrl = wx.TextCtrl(self, -1, "", wx.DefaultPosition, wx.Size(200, 20), wx.TE_READONLY)

@@ -107,7 +107,6 @@ class RecipeModel:
 
     def delete_recipe(self):
         logger.debug("Deleting recipe")
-        # delete from recipes and xref_recipe_foods where recipe_id = ? in a transaction
         self.cursor.execute('DELETE FROM Recipes WHERE recipe_id = ?', (self.selected_recipe,))
         self.cursor.execute('DELETE FROM xref_recipe_foods WHERE recipe_id = ?', (self.selected_recipe,))
         self.conn.commit()
