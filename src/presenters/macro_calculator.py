@@ -11,18 +11,18 @@ class CalculatedMacros:
 
 class MacroCalculator:
     def calculate_food_macros(self, food, multiplier):
-        logger.info("Calculating food macros with multiplier: " + str(multiplier))
+        logger.debug("Calculating food macros with multiplier: " + str(multiplier))
         calculated_macros = CalculatedMacros(0, 0, 0, 0)
         fat_calories = (food.fat * 9) * float(multiplier)
         protein_calories = (food.protein * 4) * float(multiplier)
         carbs_calories = (food.carbs * 4) * float(multiplier)
-        calculated_macros.calories = fat_calories + protein_calories + carbs_calories
+        
+        calculated_macros.calories = round(fat_calories + protein_calories + carbs_calories)
+        calculated_macros.fat_grams = round(food.fat * float(multiplier))
+        calculated_macros.protein_grams = round(food.protein * float(multiplier))
+        calculated_macros.carbs_grams = round(food.carbs * float(multiplier))
 
-        calculated_macros.fat_grams = food.fat * float(multiplier)
-        calculated_macros.protein_grams = food.protein * float(multiplier)
-        calculated_macros.carbs_grams = food.carbs * float(multiplier)
-
-        logger.info("Calculated macros: " + str(calculated_macros.fat_grams) + ", " + str(calculated_macros.protein_grams) + ", " + str(calculated_macros.carbs_grams) + ", " + str(calculated_macros.calories))
+        logger.debug("Calculated macros: " + str(calculated_macros.fat_grams) + ", " + str(calculated_macros.protein_grams) + ", " + str(calculated_macros.carbs_grams) + ", " + str(calculated_macros.calories))
         return calculated_macros
 
     def calculate_fat_protein_carb_grams(self, ingredients):
@@ -36,7 +36,7 @@ class MacroCalculator:
         return total_fat_grams, total_protein_grams, total_carb_grams
 
     def calculate_recipe_macros(self, servings, ingredients, multiplier):
-        logger.info("Calculating recipe macros with multiplier: " + str(multiplier))
+        logger.debug("Calculating recipe macros with multiplier: " + str(multiplier))
         calculated_macros = CalculatedMacros(0, 0, 0, 0)
         results = self.calculate_fat_protein_carb_grams(ingredients)
         calculated_macros = CalculatedMacros(0, 0, 0, 0)
@@ -71,7 +71,7 @@ class MacroCalculator:
         return calories
 
     def calculate_fat_percent(self, fat_g, total_calories):
-        logger.info("Calculating fat percent with: " + str(fat_g) + ", " + str(total_calories))
+        logger.debug("Calculating fat percent with: " + str(fat_g) + ", " + str(total_calories))
         percent_fat = 0
         total_calories_f = float(total_calories)
         fat_g_f = float(fat_g)

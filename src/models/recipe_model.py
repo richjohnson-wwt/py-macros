@@ -86,7 +86,7 @@ class RecipeModel:
         # select last inserted row id
         self.cursor.execute('SELECT last_insert_rowid()')
         self.selected_recipe = self.cursor.fetchone()[0]
-        logger.info("New recipe created: " + str(self.selected_recipe))
+        logger.debug("New recipe created: " + str(self.selected_recipe))
         self.notify('list_changed')
 
     def update_recipe(self, name, instructions, description, url, servings):

@@ -39,7 +39,7 @@ class FoodModel:
             callback()
 
     def get_foods(self):
-        logger.info("Getting foods")
+        logger.debug("Getting foods")
         foods = []
         for row in self.cursor.execute('SELECT * FROM Foods ORDER BY popularity DESC'):
             foods.append(Food(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8]))
@@ -63,7 +63,7 @@ class FoodModel:
         # select last inserted row id
         self.cursor.execute('SELECT last_insert_rowid()')
         self.selected_food = self.cursor.fetchone()[0]
-        logger.info("New food created: " + str(self.selected_food))
+        logger.debug("New food created: " + str(self.selected_food))
         self.notify('list_changed')
 
     def update_food(self, name, fat, protein, carb, calories, quantity, unit, popularity):

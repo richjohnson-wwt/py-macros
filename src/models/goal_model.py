@@ -22,7 +22,7 @@ class GoalModel(object):
         self.cursor = self.conn.cursor()
 
     def get_goal(self):
-        logger.info("Getting goal")
+        logger.debug("Getting goal")
         goals = []
         for row in self.cursor.execute('SELECT * FROM goal'):
             goals.append(Goal(row[0], row[1], row[2], row[3], row[4], row[5], row[6]))

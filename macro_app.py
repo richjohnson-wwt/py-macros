@@ -1,4 +1,4 @@
-import logging
+
 import sys
 sys.path.append('src/views')
 sys.path.append('src/presenters')
@@ -126,7 +126,7 @@ class MacroApp(wx.Frame):
         self._mgr.SetManagedWindow(parent)
 
     def create_aui(self):
-        logging.info("Creating app")
+        logger.debug("Creating app")
         self._mgr.AddPane(self.explorer_window, wx.LEFT, "Explorer")
 
         self._mgr.AddPane(self.main_window, wx.CENTER, "Main")

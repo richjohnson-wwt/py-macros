@@ -115,13 +115,13 @@ class DailyWindow(wx.Panel):
         # prompt user with the one_off_dialog
         one_off_dlg = OneOffDialog(self.Parent)
         if one_off_dlg.ShowModal() == wx.ID_OK:
-            logger.info("User chose to add one-off")
+            logger.debug("User chose to add one-off")
             return [one_off_dlg.name_text_ctrl.GetValue(),
                 one_off_dlg.food_fat_text_ctrl.GetValue(),
                 one_off_dlg.food_protein_text_ctrl.GetValue(),
                 one_off_dlg.food_carbs_text_ctrl.GetValue(),
                 one_off_dlg.food_calories_text_ctrl.GetValue()]
         else:
-            logger.info("User chose not to add one-off")
+            logger.debug("User chose not to add one-off")
             return None
         

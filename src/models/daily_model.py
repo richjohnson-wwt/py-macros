@@ -52,27 +52,27 @@ class DailyModel:
             return row[0]
 
     def does_date_exist(self, today_date):
-        logger.info("Does date exist: " + str(today_date))
+        logger.debug("Does date exist: " + str(today_date))
         return self.cursor.execute('SELECT * FROM daily_food WHERE date = ?', (str(today_date),)).fetchone() is not None
 
     def create_daily_food(self, todays_date):
-        logger.info("Creating daily food for today: " + str(todays_date))
+        logger.debug("Creating daily food for today: " + str(todays_date))
         self.cursor.execute('INSERT INTO daily_food (date, exercise_calorie_bonus, weight) VALUES (?, ?, ?)', (str(todays_date), 0, 0))
         self.conn.commit()
 
     def update_exercise_calorie_bonus(self, exercise_calorie_bonus):
-        logger.info("Updating exercise calorie bonus: " + str(exercise_calorie_bonus))
+        logger.debug("Updating exercise calorie bonus: " + str(exercise_calorie_bonus))
         self.cursor.execute('UPDATE daily_food SET exercise_calorie_bonus = ? WHERE date = ?', (str(exercise_calorie_bonus), str(self.selected_date)))
         self.conn.commit()
         self.notify()
 
     def get_daily_food(self):
-        logger.info("Getting daily food")
+        logger.debug("Getting daily food")
         for row in self.cursor.execute('SELECT * FROM daily_food where date = ?', (str(self.selected_date),)):
             return DailyFood(row[0], row[1], row[2], row[3])
 
     def get_daily_food_by_date_range(self, start_date, end_date):
-        logger.info("Getting daily food by date range")
+        logger.debug("Getting daily food by date range")
         daily_foods_by_date_range = []
         for row in self.cursor.execute('SELECT * FROM daily_food WHERE date BETWEEN ? AND ?', (str(start_date), str(end_date))):
             daily_foods_by_date_range.append(DailyFood(row[0], row[1], row[2], row[3]))
@@ -80,32 +80,32 @@ class DailyModel:
         
     
     def update_weight(self, weight):
-        logger.info("Updating weight: " + str(weight))
+        logger.debug("Updating weight: " + str(weight))
         self.cursor.execute('UPDATE daily_food SET weight = ? WHERE date = ?', (str(weight), str(self.selected_date)))
         self.conn.commit()
         self.notify()
 
     def delete_xref_daily_food(self):
-        logger.info("Deleting xref daily food")
+        logger.debug("Deleting xref daily food")
         self.cursor.execute('DELETE FROM xref_daily_foods WHERE id = ?', (self.selected_xref_id,))
         self.conn.commit()
         self.notify()
 
     def add_xref_daily_food(self, daily_food_id, name, fat, protein, carb, calories):
-        logger.info("Adding xref daily food")
+        logger.debug("Adding xref daily food")
         self.cursor.execute('INSERT INTO xref_daily_foods (daily_food_id, name, fat, protein, carb, calories) VALUES (?, ?, ?, ?, ?, ?)', (str(daily_food_id), name, fat, protein, carb, calories))
         self.conn.commit()
         self.notify()
 
     def get_xref_daily_foods(self, daily_food_id):
-        logger.info("Getting xref daily foods")
+        logger.debug("Getting xref daily foods")
         xref_daily_foods = []
         for row in self.cursor.execute('SELECT * FROM xref_daily_foods WHERE daily_food_id = ?', (str(daily_food_id),)):
             xref_daily_foods.append(XrefDailyFood(row[0], row[1], row[2], row[3], row[4], row[5], row[6]))
         return xref_daily_foods
 
     def get_totals(self, bonus_calories, goal, goal_fat_g, goal_protein_g, goal_carb_g, goal_calories):
-        logger.info("Getting totals")
+        logger.debug("Getting totals")
         daily_food = self.get_daily_food()
         xref_daily_foods = self.get_xref_daily_foods(daily_food.daily_food_id)
         total_calories = 0

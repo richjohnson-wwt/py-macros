@@ -26,19 +26,19 @@ class DailyPresenter:
 
     def post_init(self):
         todays_date = self.model.get_today_date()
-        logger.info("Today's date: " + str(todays_date))
+        logger.debug("Today's date: " + str(todays_date))
         # self.create_daily_food_if_not_exists(todays_date)
         self.on_date_changed(todays_date)
 
     def create_daily_food_if_not_exists(self, the_date):
         if self.model.does_date_exist(the_date):
-            logger.info("Date already exists")
+            logger.debug("Date already exists")
         else:
-            logger.info("Creating new date: " + str(the_date))
+            logger.debug("Creating new date: " + str(the_date))
             self.model.create_daily_food(the_date)
 
     def on_date_changed(self, new_date):
-        logger.info("Date changed: %s", new_date)
+        logger.debug("Date changed: %s", new_date)
         self.create_daily_food_if_not_exists(new_date)
         self.model.set_selected_date(new_date)
         self.load_view_from_model()
@@ -50,7 +50,7 @@ class DailyPresenter:
         self.view.reset_daily_multiplier(self.model.serving_increments, 5)
         food_list = self.model.get_xref_daily_foods(daily_food.daily_food_id)
         for food in food_list:
-            logger.info("Carb: " + str(food.carbs))
+            logger.debug("Carb: " + str(food.carbs))
         self.view.set_daily_foods(food_list)
         self.load_totals()
 
@@ -66,15 +66,15 @@ class DailyPresenter:
         self.view.set_daily_totals(totals_list)
 
     def on_add_activity(self):
-        logger.info("Adding activity")
+        logger.debug("Adding activity")
         self.model.update_exercise_calorie_bonus(self.view.add_activity_text_ctrl.GetValue())
 
     def on_add_weight(self):
-        logger.info("Adding weight")
+        logger.debug("Adding weight")
         self.model.update_weight(self.view.add_weight_text_ctrl.GetValue())
 
     def on_add_food(self):
-        logger.info("Adding food")
+        logger.debug("Adding food")
         daily_food = self.model.get_daily_food()
         food_item_to_add = self.food_model.get_food()
         multiplier = self.view.unit_combo_box.GetValue()
@@ -87,11 +87,11 @@ class DailyPresenter:
             calculated_macros.carbs_grams,
             calculated_macros.calories
         )
-        self.food_model.bump_popularity(food_item_to_add.food_id)
+        self.food_model.bump_popularity()
         self.load_view_from_model()
 
     def on_add_recipe(self):
-        logger.info("Adding recipe")
+        logger.debug("Adding recipe")
         daily_food = self.model.get_daily_food()
         recipe = self.recipe_model.get_recipe()
         ingredients = self.recipe_model.get_ingredients()
@@ -108,7 +108,7 @@ class DailyPresenter:
         self.load_view_from_model()
 
     def on_add_one_off(self):
-        logger.info("Adding one-off")
+        logger.debug("Adding one-off")
         # prompt user with the one-off dialog
         values = self.view.prompt_user_for_one_off()
         if values is not None:
@@ -117,7 +117,7 @@ class DailyPresenter:
         self.load_view_from_model()
  
     def delete_food(self):
-        logger.info("Deleting food")
+        logger.debug("Deleting food")
         self.model.delete_xref_daily_food()
         self.load_view_from_model()
 
@@ -138,7 +138,7 @@ class FoodPresenter:
 
     def update(self):
         if self.is_listening:
-            logger.info("Notified about Food selected")
+            logger.debug("Notified about Food selected")
             self.is_listening = False
             self.view.set_food(self.model.get_food(), self.unit_model.get_units())
             self.is_listening = True
@@ -146,14 +146,15 @@ class FoodPresenter:
             logger.debug("Notified about Food selected but not listening")
 
     def post_init(self):
-        logger.info("Post init FoodPresenter")
+        logger.debug("Post init FoodPresenter")
         self.view.set_food(self.model.get_food(), self.unit_model.get_units())
         self.view.apply_button.Enable(False)
         self.view.cancel_button.Enable(False)
+        self.is_listening = True
 
     def notebook_page_change(self, message):
         logger.debug("FoodPresenter - Notebook page changed: %s", message)
-        self.is_listening = True
+        # self.is_listening = True
         self.view.new_button.Enable(True)
         self.view.apply_button.Enable(False)
         self.view.cancel_button.Enable(False)
@@ -168,7 +169,7 @@ class FoodPresenter:
         self.view.new_button.Enable(True)
         self.view.cancel_button.Enable(False)
         unit_id = self.view.food_unit_combo_box.GetSelection() + 1
-        logger.info("Unit selected: " + str(unit_id))
+        logger.debug("Unit selected: " + str(unit_id))
         self.model.update_food(
             self.view.food_name_text_ctrl.GetValue(),
             self.view.food_fat_text_ctrl.GetValue(),
@@ -184,7 +185,7 @@ class FoodPresenter:
         self.view.apply_button.Enable(False)
         self.view.new_button.Enable(True)
         self.view.cancel_button.Enable(False)
-        self.view.set_food(self.model.get_food(1), self.unit_model.get_units())
+        self.update()
 
     def on_food_changed(self):
         if self.is_listening:
@@ -206,7 +207,7 @@ class RecipePresenter:
         model.register('item_selected', self, self.update)
 
     def update(self):
-        logger.info("Notified about Recipe selected")
+        logger.debug("Notified about Recipe selected")
         self.is_listening = False
         self.view.set_recipe(self.model.get_recipe())
         self.view.set_ingredients(self.model.get_ingredients())
