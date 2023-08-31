@@ -65,19 +65,6 @@ class DailyPresenter:
         totals_list = self.model.get_totals(bonus_calories, goal, goal_fat_grams, goal_protein_grams, goal_carb_grams, goal_calories)
         self.view.set_daily_totals(totals_list)
 
-        totals = totals_list[2]
-        total_fat = totals.fat
-        total_protein = totals.protein
-        total_carb = totals.carbs
-        total_calories = totals.calories
-
-        # percent_fat = self.macro_calculator.calculate_fat_percent(total_fat, total_calories)
-        # percent_protein = self.macro_calculator.calculate_protein_percent(total_protein, total_calories)
-        # percent_carb = self.macro_calculator.calculate_carb_percent(total_carb, total_calories)
-        # self.view.percent_fat_text_ctrl.SetValue(str(percent_fat))
-        # self.view.percent_protein_text_ctrl.SetValue(str(percent_protein))
-        # self.view.percent_carbs_text_ctrl.SetValue(str(percent_carb))
-
     def on_add_activity(self):
         logger.info("Adding activity")
         self.model.update_exercise_calorie_bonus(self.view.add_activity_text_ctrl.GetValue())
@@ -100,6 +87,7 @@ class DailyPresenter:
             calculated_macros.carbs_grams,
             calculated_macros.calories
         )
+        self.food_model.bump_popularity(food_item_to_add.food_id)
         self.load_view_from_model()
 
     def on_add_recipe(self):

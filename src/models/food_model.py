@@ -41,7 +41,7 @@ class FoodModel:
     def get_foods(self):
         logger.info("Getting foods")
         foods = []
-        for row in self.cursor.execute('SELECT * FROM Foods'):
+        for row in self.cursor.execute('SELECT * FROM Foods ORDER BY popularity DESC'):
             foods.append(Food(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8]))
         return foods
 
@@ -75,5 +75,11 @@ class FoodModel:
     def delete_food(self):
         logger.debug("Deleting food: " + str(self.selected_food))
         self.cursor.execute('DELETE FROM Foods WHERE food_id = ?', (self.selected_food,))
+        self.conn.commit()
+        self.notify('list_changed')
+
+    def bump_popularity(self):
+        logger.debug("Bumping popularity: " + str(self.selected_food))
+        self.cursor.execute('UPDATE Foods SET popularity = popularity + 1 WHERE food_id = ?', (self.selected_food,))
         self.conn.commit()
         self.notify('list_changed')

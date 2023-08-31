@@ -52,7 +52,12 @@ class ProgressPresenter:
         percent_carb = self.macro_calculator.calculate_carb_percent(total_carb, total_calories)
         labels = 'Fat', 'Protein', 'Carbs'
         sizes = [percent_fat, percent_protein, percent_carb]
-        self.view.draw_chart(labels, sizes)
+        logger.debug("Fat: " + str(percent_fat) + " Protein: " + str(percent_protein) + " Carbs: " + str(percent_carb))
+        # if all of the percent values are NOT 0, then draw the chart
+        if percent_fat > 0 or percent_protein > 0 or percent_carb > 0:
+            self.view.draw_chart(labels, sizes)
+        else:
+            self.view.draw_chart(labels, [1, 1, 1])
         
     def populate_calorie_section(self):
         dt_end_date = datetime.strptime(self.daily_model.get_today_date(), DATE_FORMAT)

@@ -141,4 +141,3 @@ class DailyModel:
             int(total_calories))
         return [xref_remaining, xref_daily_goal, xref_totals]
         
-

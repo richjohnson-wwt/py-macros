@@ -62,6 +62,7 @@ class ProgressWindow(wx.Panel):
         self.axes.clear()
         self.Fit()
         self.axes.plot(1, 0)
+
         self.axes.pie(sizes,
                          labels=labels,
                          autopct='%1.1f%%',
